@@ -1,0 +1,75 @@
+#include <stdio.h>//untuk input output
+#include <stdbool.h>//untuk fungsi boolean
+
+#define MAX_SIZE 100//MAX_SIZE dengan nilai 100
+
+// Definisi struktur stack
+typedef struct {//struct teridir dari beberapa bagian
+    char data[MAX_SIZE];//variabel data bertipe data char dengan ukuran array MAX_SIZE
+    int top;//variabel top dengan tipe data top
+} Stack;//
+
+// Fungsi untuk menginisialisasi stack
+void initialize(Stack *stack) {
+    stack->top = -1;
+}//di dalam fungsi ini nilai top dari stack di inisialisai -1 yang menandakan bahwa stack
+
+// Fungsi untuk menambahkan elemen ke dalam stack
+void push(Stack *stack, char item) {
+    stack->data[++stack->top] = item;
+}//menambahkan elemen baru kedalam tumpukkan,dengan menambahkan nilai top terlebih dahulu dengan menggunakan ++stack->top lau tumpukkan
+//yang baru disimpan di dalam array data
+
+// Fungsi untuk menghapus elemen dari stack
+char pop(Stack *stack) {
+    return stack->data[stack->top--];
+}//mengembalikan karakter yang berada pada posisi top dari array data dalam tumpukan yang ditunjuk oleh pointer stack, 
+//dan kemudian mengurangi nilai dari top
+
+// Fungsi untuk mengecek apakah tanda kurung berpasangan
+bool isBalanced(const char *expression) {
+    Stack stack;//tipe stack bernama stack digunakan untuk memeriksa keseimbangan tanda kurung
+    initialize(&stack);//memanggil fungsi initialize untuk mrnginisialisasi stack
+
+    for (int i = 0; expression[i] != '\0'; i++) {//perulangan yang dimulai dari 0 dan akan berjalan selama expression[i] tidak sama
+    //dengan karakter null atau bukan karakter dan akan terus berjalan hingga akhir string expression
+        if (expression[i] == '(' || expression[i] == '[' || expression[i] == '{') {
+            //memeriksa apakah apakah karakter tersebut adalah  tanda kurung buka ('(', '[', atau '{'),jika iya maka ditambahkan
+            push(&stack, expression[i]);////kedalam tumpukkan dengan menggunakan  fungsi push
+        } else if (expression[i] == ')' || expression[i] == ']' || expression[i] == '}') {
+            if (stack.top == -1) {
+                return false;
+            }//jika karakter tersebut bukan tanda kurung buka maka kita memeriksa apakah karakter tersebut adalah tanda kurung tutup
+            //jika iya maka kita memeriksa tumpukkan apakah kosong,jika kosong berarti tumpukkan tidak seimbang karena da kurung tutup yang
+            //tidak memiliki pasangan lalu mengembalikan nilai false yang menandakan kurung tidak seimbang
+            char current = pop(&stack);//menggunakan fungsi pop untuk menghapus dan mengembalikan elemen teratas dari tumpukan, 
+            //dan menyimpannya dalam variabel current
+            if ((expression[i] == ')' && current != '(') ||//memeriksa apakah apakah tanda  tanda kurung tutup (')') dan 
+            //karakter teratas yang dihapus dari tumpukan tidak sesuai dengan tanda kurung buka yang cocok ('(').jika tidak maka false
+                (expression[i] == ']' && current != '[') ||//karakter yang sedang diproses adalah tanda kurung penutup, 
+                //dan karakter teratas dari tumpukan tidak sesuai,jika tidak sesuai maka mengembalikkan nilai false
+                (expression[i] == '}' && current != '{')) {//
+                return false;
+            }
+        }
+    }
+
+    return stack.top == -1;
+    //mengembalikan nilai true jika tumpukan kosong dan nilai false jika tidak. 
+    //Ini dilakukan dengan memeriksa apakah top dari tumpukan (stack.top) sama dengan -1.
+}
+
+int main() {//fungsi utama 
+    char expression[100];//variabel expression  tipe data char dengan array bernilai 100
+    printf("Masukkan urutan tanda kurung: ");//mencetak teks masukkan urutan tanda kurung:
+    scanf("%s", expression);//memanggil expression
+
+    if (isBalanced(expression)) {
+        printf("YES\n");
+    } else {
+        printf("NO\n");
+    }
+    //memeriksa apakah seimbang atau tidak jika seimbang mencetak YES jika tidak seimbang mencetak NO
+
+    return 0;//program selesai
+}
